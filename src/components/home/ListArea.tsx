@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Container } from 'styles/default-styles';
 import styled, { css } from 'styled-components';
 import Color from 'assets/color';
+import deleteIcon from 'assets/img/deleteIcon.png';
 import { AnnotationType } from './annotation/AnnotationRect';
 
 interface File {
@@ -12,6 +13,7 @@ interface File {
 interface Props {
     annotationList: AnnotationType[];
     handleSelectAnnotation: (Anno: AnnotationType) => void;
+    handleDeleteAnnotation: (Anno: AnnotationType) => void;
 }
 
 const Wrapper = styled.div`
@@ -83,8 +85,23 @@ const Td = styled.td`
     border: 1px solid ${Color.lightsteelgray_20};
 `;
 
+const DeleteBtn = styled.div`
+    width: 100%;
+    height: 100%;
+    background-color: ${Color.fbred_60};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+`;
+
+const DeleteIcon = styled.img`
+    width: 15px;
+    height: 15px;
+`;
+
 const ListArea: React.FC<Props> = (props: Props) => {
-    const { annotationList, handleSelectAnnotation } = props;
+    const { annotationList, handleSelectAnnotation, handleDeleteAnnotation } = props;
     const columns: string[] = ['No', 'ClassName', 'Type', 'Object', '좌표'];
     const fileList: File[] = [
         { no: 55, name: '123567_9_3_2_159.png' },
@@ -120,6 +137,7 @@ const ListArea: React.FC<Props> = (props: Props) => {
                                 {columns.map((column) => (
                                     <ObjTh key={column}>{column}</ObjTh>
                                 ))}
+                                <ObjTh>기타</ObjTh>
                             </tr>
                         </Thead>
                         <tbody>
@@ -134,6 +152,16 @@ const ListArea: React.FC<Props> = (props: Props) => {
                                 >
                                     <Td>{annotation.id}</Td>
                                     <Td>{annotation.info?.class.title}</Td>
+                                    <Td>타입영역</Td>
+                                    <Td>Object영역</Td>
+                                    <Td>좌표영역</Td>
+                                    <Td>
+                                        <DeleteBtn
+                                            onClick={() => handleDeleteAnnotation(annotation)}
+                                        >
+                                            <DeleteIcon src={deleteIcon} alt="deleteIcon" />
+                                        </DeleteBtn>
+                                    </Td>
                                 </Tr>
                             ))}
                         </tbody>

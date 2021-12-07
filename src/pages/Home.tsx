@@ -100,6 +100,16 @@ const Home: React.FC = () => {
         });
     };
 
+    const handleDeleteAnnotation = (Anno: AnnotationType) => {
+        // eslint-disable-next-line no-alert
+        const answer = window.confirm('정말로 지우시겠습니까?');
+        if (answer) {
+            setAnnotationList((prev) => {
+                return prev.filter((item) => item.id !== Anno.id);
+            });
+        }
+    };
+
     return (
         <Container fullSpace flexDirection="row" scroll>
             <SettingArea
@@ -128,6 +138,7 @@ const Home: React.FC = () => {
             <ListArea
                 annotationList={annotationList}
                 handleSelectAnnotation={handleSelectAnnotation}
+                handleDeleteAnnotation={handleDeleteAnnotation}
             />
         </Container>
     );
