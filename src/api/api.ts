@@ -2,7 +2,7 @@ import type { AxiosInstance } from 'axios';
 import axios from 'axios';
 
 const API: AxiosInstance = axios.create({
-    baseURL: 'url',
+    baseURL: 'https://crowdbank.co.kr/api/',
     timeout: 10000,
     withCredentials: true,
     headers: {

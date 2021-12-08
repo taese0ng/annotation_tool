@@ -1,27 +1,9 @@
 import React, { MouseEvent, useState, useRef } from 'react';
 import styled from 'styled-components';
-import { ClassType } from 'pages/Home';
-
-export interface AnnotationType {
-    id: string;
-    mark: {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-    };
-    info?: {
-        accidentType: string;
-        accidentFeat: string;
-        AInfo: string;
-        BInfo: string;
-        rate: string;
-        class: ClassType;
-    };
-}
+import { AnnotationType } from 'interface';
 
 interface Props {
-    type: AnnotationType;
+    annotation: AnnotationType;
     isSelected: boolean;
     handleChangeAnnotation: (Anno: AnnotationType) => void;
 }
@@ -78,11 +60,11 @@ const CoorPad = styled.div`
 `;
 
 const AnnotationRect: React.FC<Props> = (props: Props) => {
-    const { type, isSelected, handleChangeAnnotation } = props;
-    const { mark, info } = type;
+    const { annotation, isSelected, handleChangeAnnotation } = props;
+    const { mark, info } = annotation;
     const [dragable, setDragable] = useState<string | null>(null);
     const coorRef = useRef({ x: 0, y: 0 });
-    const [tempRect, setTempRect] = useState<AnnotationType>(type);
+    const [tempRect, setTempRect] = useState<AnnotationType>(annotation);
 
     const handleStartDrag = (e: MouseEvent<HTMLDivElement>) => {
         const { offsetX, offsetY } = e.nativeEvent;

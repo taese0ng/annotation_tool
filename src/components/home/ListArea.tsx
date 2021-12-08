@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Container } from 'styles/default-styles';
 import styled, { css } from 'styled-components';
 import Color from 'assets/color';
 import deleteIcon from 'assets/img/deleteIcon.png';
-import { AnnotationType } from './annotation/AnnotationRect';
-
-interface File {
-    no: number;
-    name: string;
-}
+import { AnnotationType, File } from 'interface';
 
 interface Props {
+    fileList: File[];
     annotationList: AnnotationType[];
     handleSelectAnnotation: (Anno: AnnotationType) => void;
     handleDeleteAnnotation: (Anno: AnnotationType) => void;
+    handleSelectImg: (Anno: File) => void;
+    selectedImg: File | null;
+    selectedAnnotation: AnnotationType | null;
 }
 
 const Wrapper = styled.div`
@@ -101,30 +100,16 @@ const DeleteIcon = styled.img`
 `;
 
 const ListArea: React.FC<Props> = (props: Props) => {
-    const { annotationList, handleSelectAnnotation, handleDeleteAnnotation } = props;
+    const {
+        fileList,
+        annotationList,
+        handleSelectAnnotation,
+        handleDeleteAnnotation,
+        handleSelectImg,
+        selectedImg,
+        selectedAnnotation,
+    } = props;
     const columns: string[] = ['No', 'ClassName', 'Type', 'Object', '좌표'];
-    const fileList: File[] = [
-        { no: 55, name: '123567_9_3_2_159.png' },
-        { no: 56, name: '123567_9_3_2_160.png' },
-        { no: 57, name: '123567_9_3_2_161.png' },
-        { no: 58, name: '123567_9_3_2_162.png' },
-        { no: 59, name: '123567_9_3_2_163.png' },
-        { no: 60, name: '123567_9_3_2_164.png' },
-        { no: 61, name: '123567_9_3_2_165.png' },
-        { no: 62, name: '123567_9_3_2_166.png' },
-        { no: 63, name: '123567_9_3_2_167.png' },
-        { no: 64, name: '123567_9_3_2_168.png' },
-    ];
-    const [selectedImg, setSelectedImg] = useState<File | null>(null);
-    const [selectedObj, setSelectedObj] = useState<AnnotationType | null>(null);
-
-    const handleSelectImg = (selectedItem: File) => {
-        setSelectedImg(selectedItem);
-    };
-
-    const handleSelectObj = (selectedItem: AnnotationType) => {
-        setSelectedObj(selectedItem);
-    };
 
     return (
         <Container size={{ width: '500px', height: '480px' }}>
@@ -146,9 +131,8 @@ const ListArea: React.FC<Props> = (props: Props) => {
                                     key={annotation.id}
                                     onClick={() => {
                                         handleSelectAnnotation(annotation);
-                                        handleSelectObj(annotation);
                                     }}
-                                    selected={selectedObj?.id === annotation.id}
+                                    selected={selectedAnnotation?.id === annotation.id}
                                 >
                                     <Td>{annotation.id}</Td>
                                     <Td>{annotation.info?.class.title}</Td>

@@ -1,4 +1,4 @@
-import { AnnotationType } from 'components/home/annotation/AnnotationRect';
+import { AnnotationType } from 'interface';
 
 const randomNumber = (annotationList: AnnotationType[]): string => {
     const True = true;

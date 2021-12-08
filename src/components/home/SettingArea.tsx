@@ -2,7 +2,7 @@ import React, { ChangeEvent } from 'react';
 import { Container, Col } from 'styles/default-styles';
 import styled, { css } from 'styled-components';
 import Color from 'assets/color';
-import { ClassType } from 'pages/Home';
+import { ClassType } from 'interface';
 
 interface Props {
     handleStartDrawMode: () => void;
@@ -72,10 +72,6 @@ const SettingArea: React.FC<Props> = (props: Props) => {
         console.log('save');
     };
 
-    const handleClickDraw = () => {
-        handleStartDrawMode();
-    };
-
     const handleClickAutoLabelling = () => {
         // eslint-disable-next-line no-console
         console.log('autoLabelling');
@@ -123,7 +119,7 @@ const SettingArea: React.FC<Props> = (props: Props) => {
                 </Col>
             </Wrapper>
 
-            <Button onClick={handleClickDraw}>그리기</Button>
+            <Button onClick={handleStartDrawMode}>그리기</Button>
 
             <Button onClick={handleClickAutoLabelling} style={{ marginTop: 10 }}>
                 Auto

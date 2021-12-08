@@ -1,9 +1,8 @@
 import React, { useState, useRef, MouseEvent } from 'react';
 import styled from 'styled-components';
 import { Container } from 'styles/default-styles';
-import dummyImg from 'assets/img/dummyImg.png';
-import { ClassType } from 'pages/Home';
-import AnnotationRect, { AnnotationType } from './annotation/AnnotationRect';
+import { ClassType, AnnotationType, File } from 'interface';
+import AnnotationRect from './annotation/AnnotationRect';
 
 interface Props {
     annotationList: AnnotationType[];
@@ -13,6 +12,7 @@ interface Props {
     selectedAnnotation: AnnotationType | null;
     selectedClass: ClassType;
     handleChangeAnnotation: (Anno: AnnotationType) => void;
+    selectedImg: File | null;
 }
 
 const Img = styled.img`
@@ -54,6 +54,7 @@ const ImageArea2: React.FC<Props> = (props: Props) => {
         handleEndDrawMode,
         selectedAnnotation,
         handleChangeAnnotation,
+        selectedImg,
     } = props;
     const [mouseClick, setMouseClick] = useState<boolean>(false);
     const imgRef = useRef(null);
@@ -109,11 +110,11 @@ const ImageArea2: React.FC<Props> = (props: Props) => {
         >
             {selectedAnnotation ? <></> : <Screen> </Screen>}
 
-            <Img ref={imgRef} src={dummyImg} alt="selectedImg" draggable={false} />
+            <Img ref={imgRef} src={selectedImg?.name} alt="selectedImg" draggable={false} />
             {annotationList.map((item) => (
                 <AnnotationRect
                     key={item.id}
-                    type={item}
+                    annotation={item}
                     isSelected={selectedAnnotation?.id === item.id}
                     handleChangeAnnotation={handleChangeAnnotation}
                 />

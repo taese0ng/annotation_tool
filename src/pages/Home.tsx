@@ -1,15 +1,23 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import { ImageArea2, SettingArea, ListArea } from 'components/home';
 import { Container, Spacer } from 'styles/default-styles';
-import { AnnotationType } from 'components/home/annotation/AnnotationRect';
 import Color from 'assets/color';
 import randomNumber from 'utils/RandomNum';
+import getImageList from 'api/imageList';
+import { File, ClassType, AnnotationType } from 'interface';
 
-export interface ClassType {
-    title: string;
-    id: string;
-    color: string;
-}
+const classList: ClassType[] = [
+    { title: '선택하세요', id: 'none', color: 'black' },
+    { title: '차량', id: 'car', color: 'red' },
+    { title: '보행자', id: 'pedestrian', color: 'orange' },
+    { title: '이륜차', id: 'cart', color: 'yellow' },
+    { title: '자전거', id: 'bike', color: 'green' },
+    { title: '표지판', id: 'notice', color: 'blue' },
+    { title: '신호등(적색)', id: 'red_signal', color: 'navy' },
+    { title: '신호등(녹색)', id: 'green_signal', color: 'purple' },
+    { title: '신호등(기타)', id: 'etc_signal', color: Color.hotPink },
+    { title: '횡단보도', id: 'crosswalk', color: Color.graySky },
+];
 
 const Home: React.FC = () => {
     const [annotationList, setAnnotationList] = useState<AnnotationType[]>([]);
@@ -27,18 +35,18 @@ const Home: React.FC = () => {
         id: 'none',
         color: 'black',
     });
-    const classList: ClassType[] = [
-        { title: '선택하세요', id: 'none', color: 'black' },
-        { title: '차량', id: 'car', color: 'red' },
-        { title: '보행자', id: 'pedestrian', color: 'orange' },
-        { title: '이륜차', id: 'cart', color: 'yellow' },
-        { title: '자전거', id: 'bike', color: 'green' },
-        { title: '표지판', id: 'notice', color: 'blue' },
-        { title: '신호등(적색)', id: 'red_signal', color: 'navy' },
-        { title: '신호등(녹색)', id: 'green_signal', color: 'purple' },
-        { title: '신호등(기타)', id: 'etc_signal', color: Color.hotPink },
-        { title: '횡단보도', id: 'crosswalk', color: Color.graySky },
-    ];
+    const [fileList, setFileList] = useState<File[]>([
+        { no: 55, name: 'https://data.crowdbank.co.kr/images/46/013_112_141.png', annoList: [] },
+        { no: 56, name: 'https://data.crowdbank.co.kr/images/46/013_112_139.png', annoList: [] },
+        { no: 57, name: 'https://data.crowdbank.co.kr/images/46/013_112_140.png', annoList: [] },
+    ]);
+    const [selectedImg, setSelectedImg] = useState<File>(fileList[0]);
+
+    const init = async () => {
+        const res = await getImageList();
+        // eslint-disable-next-line no-console
+        console.log(res);
+    };
 
     const handleSelectClass = (e: ChangeEvent<HTMLSelectElement>) => {
         const { value } = e.target;
@@ -65,7 +73,13 @@ const Home: React.FC = () => {
             return;
         }
 
-        setAnnotationList((prev) => [...prev, tempAnno]);
+        setSelectedImg((prev) => {
+            return {
+                no: prev.no,
+                name: prev.name,
+                annoList: [...prev.annoList, tempAnno],
+            };
+        });
     };
 
     const handleEndDrawMode = () => {
@@ -90,13 +104,17 @@ const Home: React.FC = () => {
     };
 
     const handleChangeAnnotation = (Anno: AnnotationType) => {
-        setAnnotationList((prev) => {
-            return prev.map((item) => {
-                if (item.id === Anno.id) {
-                    return Anno;
-                }
-                return item;
-            });
+        setSelectedImg((prev) => {
+            return {
+                no: prev.no,
+                name: prev.name,
+                annoList: prev.annoList.map((item) => {
+                    if (item.id === Anno.id) {
+                        return Anno;
+                    }
+                    return item;
+                }),
+            };
         });
     };
 
@@ -104,11 +122,32 @@ const Home: React.FC = () => {
         // eslint-disable-next-line no-alert
         const answer = window.confirm('정말로 지우시겠습니까?');
         if (answer) {
-            setAnnotationList((prev) => {
-                return prev.filter((item) => item.id !== Anno.id);
+            setSelectedImg((prev) => {
+                return {
+                    no: prev.no,
+                    name: prev.name,
+                    annoList: prev.annoList.filter((item) => item.id !== Anno.id),
+                };
             });
         }
     };
+
+    const handleSelectImg = (selectedItem: File) => {
+        setFileList((prev) => {
+            return prev.map((file) => {
+                if (file.no === selectedImg.no) {
+                    return selectedImg;
+                }
+                return file;
+            });
+        });
+        setSelectedImg(selectedItem);
+        setAnnotationList(selectedItem.annoList);
+    };
+
+    useEffect(() => {
+        init();
+    }, []);
 
     return (
         <Container fullSpace flexDirection="row" scroll>
@@ -127,18 +166,23 @@ const Home: React.FC = () => {
                 selectedClass={selectedClass}
                 drawMode={drawMode}
                 handleEndDrawMode={handleEndDrawMode}
-                annotationList={annotationList}
+                annotationList={selectedImg.annoList}
                 handleAddAnnotation={handleAddAnnotation}
                 selectedAnnotation={selectedAnnotation}
                 handleChangeAnnotation={handleChangeAnnotation}
+                selectedImg={selectedImg}
             />
 
             <Spacer length={25} />
 
             <ListArea
-                annotationList={annotationList}
+                fileList={fileList}
+                annotationList={selectedImg.annoList}
+                selectedAnnotation={selectedAnnotation}
                 handleSelectAnnotation={handleSelectAnnotation}
                 handleDeleteAnnotation={handleDeleteAnnotation}
+                handleSelectImg={handleSelectImg}
+                selectedImg={selectedImg}
             />
         </Container>
     );
