@@ -23,7 +23,12 @@ export interface AnnotationType {
 }
 
 export interface File {
-    no: number;
-    name: string;
+    info: {
+        dno: string;
+        url: string;
+        domain: string;
+        filename: string;
+        path: string;
+    };
     annoList: AnnotationType[];
 }

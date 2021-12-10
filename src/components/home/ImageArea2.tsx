@@ -2,6 +2,7 @@ import React, { useState, useRef, MouseEvent } from 'react';
 import styled from 'styled-components';
 import { Container } from 'styles/default-styles';
 import { ClassType, AnnotationType, File } from 'interface';
+import randomNum from 'utils/RandomNum';
 import AnnotationRect from './annotation/AnnotationRect';
 
 interface Props {
@@ -77,7 +78,7 @@ const ImageArea2: React.FC<Props> = (props: Props) => {
             const { offsetX, offsetY } = e.nativeEvent;
             setTempRect(() => {
                 return {
-                    id: `${annotationList.length}`,
+                    id: `${randomNum(annotationList)}`,
                     mark: {
                         x: coorRef.current.x < offsetX ? coorRef.current.x : offsetX,
                         y: coorRef.current.y < offsetY ? coorRef.current.y : offsetY,
@@ -110,15 +111,17 @@ const ImageArea2: React.FC<Props> = (props: Props) => {
         >
             {selectedAnnotation ? <></> : <Screen> </Screen>}
 
-            <Img ref={imgRef} src={selectedImg?.name} alt="selectedImg" draggable={false} />
-            {annotationList.map((item) => (
-                <AnnotationRect
-                    key={item.id}
-                    annotation={item}
-                    isSelected={selectedAnnotation?.id === item.id}
-                    handleChangeAnnotation={handleChangeAnnotation}
-                />
-            ))}
+            <Img ref={imgRef} src={selectedImg?.info.url} alt="selectedImg" draggable={false} />
+
+            {annotationList &&
+                annotationList.map((item) => (
+                    <AnnotationRect
+                        key={item.id}
+                        annotation={item}
+                        isSelected={selectedAnnotation?.id === item.id}
+                        handleChangeAnnotation={handleChangeAnnotation}
+                    />
+                ))}
             {mouseClick && <DummyRect mark={tempRect} color={selectedClass.color} />}
         </Container>
     );

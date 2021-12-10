@@ -126,28 +126,29 @@ const ListArea: React.FC<Props> = (props: Props) => {
                             </tr>
                         </Thead>
                         <tbody>
-                            {annotationList.map((annotation) => (
-                                <Tr
-                                    key={annotation.id}
-                                    onClick={() => {
-                                        handleSelectAnnotation(annotation);
-                                    }}
-                                    selected={selectedAnnotation?.id === annotation.id}
-                                >
-                                    <Td>{annotation.id}</Td>
-                                    <Td>{annotation.info?.class.title}</Td>
-                                    <Td>타입영역</Td>
-                                    <Td>Object영역</Td>
-                                    <Td>좌표영역</Td>
-                                    <Td>
-                                        <DeleteBtn
-                                            onClick={() => handleDeleteAnnotation(annotation)}
-                                        >
-                                            <DeleteIcon src={deleteIcon} alt="deleteIcon" />
-                                        </DeleteBtn>
-                                    </Td>
-                                </Tr>
-                            ))}
+                            {annotationList &&
+                                annotationList.map((annotation) => (
+                                    <Tr
+                                        key={annotation.id}
+                                        onClick={() => {
+                                            handleSelectAnnotation(annotation);
+                                        }}
+                                        selected={selectedAnnotation?.id === annotation.id}
+                                    >
+                                        <Td>{annotation.id}</Td>
+                                        <Td>{annotation.info?.class.title}</Td>
+                                        <Td>타입영역</Td>
+                                        <Td>Object영역</Td>
+                                        <Td>좌표영역</Td>
+                                        <Td>
+                                            <DeleteBtn
+                                                onClick={() => handleDeleteAnnotation(annotation)}
+                                            >
+                                                <DeleteIcon src={deleteIcon} alt="deleteIcon" />
+                                            </DeleteBtn>
+                                        </Td>
+                                    </Tr>
+                                ))}
                         </tbody>
                     </Table>
                 </TableWrapper>
@@ -164,12 +165,12 @@ const ListArea: React.FC<Props> = (props: Props) => {
                         <tbody style={{ height: 100, overflow: 'hidden' }}>
                             {fileList.map((file) => (
                                 <Tr
-                                    key={file.no}
+                                    key={file.info.dno}
                                     onClick={() => handleSelectImg(file)}
-                                    selected={selectedImg?.no === file.no}
+                                    selected={selectedImg?.info.dno === file.info.dno}
                                 >
-                                    <Td>{file.no}</Td>
-                                    <Td>{file.name}</Td>
+                                    <Td>{file.info.dno}</Td>
+                                    <Td>{file.info.filename}</Td>
                                 </Tr>
                             ))}
                         </tbody>

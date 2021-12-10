@@ -5,6 +5,7 @@ import Color from 'assets/color';
 import randomNumber from 'utils/RandomNum';
 import getImageList from 'api/imageList';
 import { File, ClassType, AnnotationType } from 'interface';
+import dummyImg from 'assets/img/dummyImg.png';
 
 const classList: ClassType[] = [
     { title: '선택하세요', id: 'none', color: 'black' },
@@ -36,16 +37,32 @@ const Home: React.FC = () => {
         color: 'black',
     });
     const [fileList, setFileList] = useState<File[]>([
-        { no: 55, name: 'https://data.crowdbank.co.kr/images/46/013_112_141.png', annoList: [] },
-        { no: 56, name: 'https://data.crowdbank.co.kr/images/46/013_112_139.png', annoList: [] },
-        { no: 57, name: 'https://data.crowdbank.co.kr/images/46/013_112_140.png', annoList: [] },
+        {
+            info: {
+                dno: '1',
+                url: dummyImg,
+                domain: '',
+                filename: 'dummyImg',
+                path: '',
+            },
+            annoList: [],
+        },
     ]);
     const [selectedImg, setSelectedImg] = useState<File>(fileList[0]);
 
     const init = async () => {
         const res = await getImageList();
         // eslint-disable-next-line no-console
-        console.log(res);
+        console.log(res.data.datas);
+        const { datas } = res.data;
+        const productData = datas.map((data: File) => {
+            return {
+                info: data,
+                annoList: [],
+            };
+        });
+        setFileList(productData);
+        setSelectedImg(productData[0]);
     };
 
     const handleSelectClass = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -75,8 +92,13 @@ const Home: React.FC = () => {
 
         setSelectedImg((prev) => {
             return {
-                no: prev.no,
-                name: prev.name,
+                info: {
+                    dno: prev.info.dno,
+                    filename: prev.info.filename,
+                    path: prev.info.path,
+                    url: prev.info.url,
+                    domain: prev.info.domain,
+                },
                 annoList: [...prev.annoList, tempAnno],
             };
         });
@@ -106,8 +128,13 @@ const Home: React.FC = () => {
     const handleChangeAnnotation = (Anno: AnnotationType) => {
         setSelectedImg((prev) => {
             return {
-                no: prev.no,
-                name: prev.name,
+                info: {
+                    dno: prev.info.dno,
+                    filename: prev.info.filename,
+                    path: prev.info.path,
+                    url: prev.info.url,
+                    domain: prev.info.domain,
+                },
                 annoList: prev.annoList.map((item) => {
                     if (item.id === Anno.id) {
                         return Anno;
@@ -124,8 +151,13 @@ const Home: React.FC = () => {
         if (answer) {
             setSelectedImg((prev) => {
                 return {
-                    no: prev.no,
-                    name: prev.name,
+                    info: {
+                        dno: prev.info.dno,
+                        filename: prev.info.filename,
+                        path: prev.info.path,
+                        url: prev.info.url,
+                        domain: prev.info.domain,
+                    },
                     annoList: prev.annoList.filter((item) => item.id !== Anno.id),
                 };
             });
@@ -135,7 +167,7 @@ const Home: React.FC = () => {
     const handleSelectImg = (selectedItem: File) => {
         setFileList((prev) => {
             return prev.map((file) => {
-                if (file.no === selectedImg.no) {
+                if (file.info.dno === selectedImg.info.dno) {
                     return selectedImg;
                 }
                 return file;

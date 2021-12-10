@@ -1,5 +1,4 @@
 import API from './api';
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getImageList = async (): Promise<any> => {
     try {
