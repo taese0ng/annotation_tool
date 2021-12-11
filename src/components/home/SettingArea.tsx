@@ -7,16 +7,17 @@ import { ClassType } from 'interface';
 interface Props {
     handleStartDrawMode: () => void;
     inputs: {
-        accidentType: string;
-        accidentFeat: string;
-        AInfo: string;
-        BInfo: string;
+        accidentPlace: string;
+        placeFeat: string;
+        objectA: string;
+        objectB: string;
         rate: string;
     };
     handleChangeInput: (e: ChangeEvent<HTMLInputElement>) => void;
     classList: ClassType[];
     selectedClass: ClassType;
     handleSelectClass: (e: ChangeEvent<HTMLSelectElement>) => void;
+    handleSaveData: () => void;
 }
 
 const width = css`
@@ -64,13 +65,9 @@ const SettingArea: React.FC<Props> = (props: Props) => {
         classList,
         selectedClass,
         handleSelectClass,
+        handleSaveData,
     } = props;
-    const { accidentType, accidentFeat, AInfo, BInfo, rate } = inputs;
-
-    const handleClickSave = () => {
-        // eslint-disable-next-line no-console
-        console.log('save');
-    };
+    const { accidentPlace, placeFeat, objectA, objectB, rate } = inputs;
 
     const handleClickAutoLabelling = () => {
         // eslint-disable-next-line no-console
@@ -79,27 +76,31 @@ const SettingArea: React.FC<Props> = (props: Props) => {
 
     return (
         <Container size={{ width: '200px', height: '100%' }}>
-            <Button onClick={handleClickSave}>저장</Button>
+            <Button onClick={handleSaveData}>저장</Button>
 
             <Wrapper>
                 <Col>
                     <Label>사고 장소 유형</Label>
-                    <Input name="accidentType" value={accidentType} onChange={handleChangeInput} />
+                    <Input
+                        name="accidentPlace"
+                        value={accidentPlace}
+                        onChange={handleChangeInput}
+                    />
                 </Col>
 
                 <Col>
                     <Label>사고 장소 특징</Label>
-                    <Input name="accidentFeat" value={accidentFeat} onChange={handleChangeInput} />
+                    <Input name="placeFeat" value={placeFeat} onChange={handleChangeInput} />
                 </Col>
 
                 <Col>
                     <Label>사고 객체 A 진행 정보</Label>
-                    <Input name="AInfo" value={AInfo} onChange={handleChangeInput} />
+                    <Input name="objectA" value={objectA} onChange={handleChangeInput} />
                 </Col>
 
                 <Col>
                     <Label>사고 객체 B 진행 정보</Label>
-                    <Input name="BInfo" value={BInfo} onChange={handleChangeInput} />
+                    <Input name="objectB" value={objectB} onChange={handleChangeInput} />
                 </Col>
 
                 <Col>

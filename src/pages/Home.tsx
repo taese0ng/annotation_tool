@@ -6,6 +6,7 @@ import randomNumber from 'utils/RandomNum';
 import getImageList from 'api/imageList';
 import { File, ClassType, AnnotationType } from 'interface';
 import dummyImg from 'assets/img/dummyImg.png';
+import saveAnnotationData from 'api/annotation';
 
 const classList: ClassType[] = [
     { title: '선택하세요', id: 'none', color: 'black' },
@@ -21,14 +22,13 @@ const classList: ClassType[] = [
 ];
 
 const Home: React.FC = () => {
-    const [annotationList, setAnnotationList] = useState<AnnotationType[]>([]);
     const [drawMode, setDrawMode] = useState<boolean>(false);
     const [selectedAnnotation, setSelectedAnnotation] = useState<AnnotationType | null>(null);
     const [inputs, setInputs] = useState({
-        accidentType: '',
-        accidentFeat: '',
-        AInfo: '',
-        BInfo: '',
+        accidentPlace: '',
+        placeFeat: '',
+        objectA: '',
+        objectB: '',
         rate: '',
     });
     const [selectedClass, setSelectedClass] = useState<ClassType>({
@@ -52,8 +52,7 @@ const Home: React.FC = () => {
 
     const init = async () => {
         const res = await getImageList();
-        // eslint-disable-next-line no-console
-        console.log(res.data.datas);
+
         const { datas } = res.data;
         const productData = datas.map((data: File) => {
             return {
@@ -74,17 +73,10 @@ const Home: React.FC = () => {
 
     const handleAddAnnotation = (Anno: AnnotationType) => {
         const tempAnno = Anno;
-        tempAnno.id = randomNumber(annotationList);
-        tempAnno.info = {
-            accidentType: inputs.accidentType,
-            accidentFeat: inputs.accidentFeat,
-            AInfo: inputs.AInfo,
-            BInfo: inputs.BInfo,
-            rate: inputs.rate,
-            class: selectedClass,
-        };
+        tempAnno.id = randomNumber(selectedImg.annoList);
+        tempAnno.class = selectedClass;
 
-        if (tempAnno.info.class.id === 'none') {
+        if (tempAnno.class.id === 'none') {
             // eslint-disable-next-line no-alert
             window.alert('class를 선택하지 않았습니다.');
             return;
@@ -174,7 +166,37 @@ const Home: React.FC = () => {
             });
         });
         setSelectedImg(selectedItem);
-        setAnnotationList(selectedItem.annoList);
+    };
+
+    const handleSaveData = async () => {
+        const formData = new FormData();
+
+        const boundingList = selectedImg.annoList.map((anno) => {
+            return {
+                id: anno.id,
+                class_name: anno.class.title,
+                coordinate: [anno.mark.x, anno.mark.y, anno.mark.width, anno.mark.height],
+            };
+        });
+
+        const data = {
+            url: selectedImg.info.url,
+            accident_place: inputs.accidentPlace,
+            place_feature: inputs.placeFeat,
+            object_A: inputs.objectA,
+            object_B: inputs.objectB,
+            rate: inputs.rate,
+            Bounding_Box: boundingList,
+        };
+
+        formData.append('mode', 'annotation');
+        formData.append('apikey', '7670f88f-814c-4a16-bd13-5eb2cdf86f01');
+        formData.append('pno', '46');
+        formData.append('spno', '41');
+        formData.append('dno', selectedImg.info.dno);
+        formData.append('data', JSON.stringify(data));
+
+        await saveAnnotationData(formData);
     };
 
     useEffect(() => {
@@ -190,6 +212,7 @@ const Home: React.FC = () => {
                 classList={classList}
                 selectedClass={selectedClass}
                 handleSelectClass={handleSelectClass}
+                handleSaveData={handleSaveData}
             />
 
             <Spacer length={25} />

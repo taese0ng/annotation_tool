@@ -62,6 +62,7 @@ const ImageArea2: React.FC<Props> = (props: Props) => {
     const [tempRect, setTempRect] = useState<AnnotationType>({
         id: '0',
         mark: { x: 0, y: 0, width: 0, height: 0 },
+        class: { title: '', id: '', color: 'black' },
     });
     const coorRef = useRef({ x: 0, y: 0 });
 
@@ -85,6 +86,7 @@ const ImageArea2: React.FC<Props> = (props: Props) => {
                         width: Math.abs(offsetX - coorRef.current.x),
                         height: Math.abs(offsetY - coorRef.current.y),
                     },
+                    class: { title: '', id: '', color: 'black' },
                 };
             });
         }
@@ -98,6 +100,7 @@ const ImageArea2: React.FC<Props> = (props: Props) => {
             setTempRect({
                 id: '0',
                 mark: { x: 0, y: 0, width: 0, height: 0 },
+                class: { title: '', id: '', color: 'black' },
             });
         }
     };

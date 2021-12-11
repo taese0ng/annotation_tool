@@ -12,14 +12,7 @@ export interface AnnotationType {
         width: number;
         height: number;
     };
-    info?: {
-        accidentType: string;
-        accidentFeat: string;
-        AInfo: string;
-        BInfo: string;
-        rate: string;
-        class: ClassType;
-    };
+    class: ClassType;
 }
 
 export interface File {
@@ -31,4 +24,23 @@ export interface File {
         path: string;
     };
     annoList: AnnotationType[];
+}
+
+interface DataType {
+    url: string;
+    accident_place: string;
+    place_feature: string;
+    object_A: string;
+    object_B: string;
+    rate: string;
+    Bounding_Box: Array<{ id: string; class_name: string; coordinate: number[] }>;
+}
+
+export interface SaveDataType {
+    mode: string;
+    apikey: string;
+    pno: string;
+    spno: string;
+    dno: string;
+    data: DataType;
 }

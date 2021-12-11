@@ -61,7 +61,7 @@ const CoorPad = styled.div`
 
 const AnnotationRect: React.FC<Props> = (props: Props) => {
     const { annotation, isSelected, handleChangeAnnotation } = props;
-    const { mark, info } = annotation;
+    const { mark, class: Class } = annotation;
     const [dragable, setDragable] = useState<string | null>(null);
     const coorRef = useRef({ x: 0, y: 0 });
     const [tempRect, setTempRect] = useState<AnnotationType>(annotation);
@@ -127,7 +127,7 @@ const AnnotationRect: React.FC<Props> = (props: Props) => {
                         width: prev.mark.width,
                         height: prev.mark.height,
                     },
-                    info: prev.info,
+                    class: prev.class,
                 };
             });
         } else if (isSelected && dragable === 'lt') {
@@ -149,7 +149,7 @@ const AnnotationRect: React.FC<Props> = (props: Props) => {
                                 ? mark.height - (offsetY - coorRef.current.y)
                                 : mark.height + (coorRef.current.y - offsetY),
                     },
-                    info: prev.info,
+                    class: prev.class,
                 };
             });
         } else if (isSelected && dragable === 'rt') {
@@ -165,7 +165,7 @@ const AnnotationRect: React.FC<Props> = (props: Props) => {
                         width: offsetX - mark.x,
                         height: mark.height - (offsetY - coorRef.current.y),
                     },
-                    info: prev.info,
+                    class: prev.class,
                 };
             });
         } else if (isSelected && dragable === 'lb') {
@@ -181,7 +181,7 @@ const AnnotationRect: React.FC<Props> = (props: Props) => {
                                 : mark.width + (coorRef.current.x - offsetX),
                         height: offsetY - mark.y,
                     },
-                    info: prev.info,
+                    class: prev.class,
                 };
             });
         } else if (isSelected && dragable === 'rb') {
@@ -194,7 +194,7 @@ const AnnotationRect: React.FC<Props> = (props: Props) => {
                         width: offsetX - mark.x,
                         height: offsetY - mark.y,
                     },
-                    info: prev.info,
+                    class: prev.class,
                 };
             });
         }
@@ -213,15 +213,15 @@ const AnnotationRect: React.FC<Props> = (props: Props) => {
                 <Rect
                     width={tempRect.mark.width}
                     height={tempRect.mark.height}
-                    color={tempRect.info?.class.color || 'black'}
+                    color={tempRect.class.color || 'black'}
                     x={tempRect.mark.x}
                     y={tempRect.mark.y}
                     isSelected={isSelected}
                 >
-                    <EdgeDot edge="lt" color={tempRect.info?.class.color || 'black'} />
-                    <EdgeDot edge="rt" color={tempRect.info?.class.color || 'black'} />
-                    <EdgeDot edge="lb" color={tempRect.info?.class.color || 'black'} />
-                    <EdgeDot edge="rb" color={tempRect.info?.class.color || 'black'} />
+                    <EdgeDot edge="lt" color={tempRect.class.color || 'black'} />
+                    <EdgeDot edge="rt" color={tempRect.class.color || 'black'} />
+                    <EdgeDot edge="lb" color={tempRect.class.color || 'black'} />
+                    <EdgeDot edge="rb" color={tempRect.class.color || 'black'} />
                 </Rect>
 
                 <CoorPad
@@ -237,7 +237,7 @@ const AnnotationRect: React.FC<Props> = (props: Props) => {
         <Rect
             width={mark.width}
             height={mark.height}
-            color={info?.class.color || 'black'}
+            color={Class.color || 'black'}
             x={mark.x}
             y={mark.y}
             isSelected={isSelected}
