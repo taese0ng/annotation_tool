@@ -136,7 +136,7 @@ const ListArea: React.FC<Props> = (props: Props) => {
                                         selected={selectedAnnotation?.id === annotation.id}
                                     >
                                         <Td>{annotation.id}</Td>
-                                        <Td>{annotation.class.title}</Td>
+                                        <Td>{annotation.class}</Td>
                                         <Td>타입영역</Td>
                                         <Td>Object영역</Td>
                                         <Td>좌표영역</Td>

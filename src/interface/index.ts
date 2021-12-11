@@ -1,9 +1,3 @@
-export interface ClassType {
-    title: string;
-    id: string;
-    color: string;
-}
-
 export interface AnnotationType {
     id: string;
     mark: {
@@ -12,16 +6,23 @@ export interface AnnotationType {
         width: number;
         height: number;
     };
-    class: ClassType;
+    class: string;
 }
 
 export interface File {
     info: {
         dno: string;
+        pno: string;
+        spno: string;
         url: string;
         domain: string;
         filename: string;
         path: string;
+        accidentPlace: string;
+        placeFeat: string;
+        objectA: string;
+        objectB: string;
+        rate: string;
     };
     annoList: AnnotationType[];
 }

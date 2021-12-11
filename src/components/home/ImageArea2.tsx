@@ -1,8 +1,9 @@
 import React, { useState, useRef, MouseEvent } from 'react';
 import styled from 'styled-components';
 import { Container } from 'styles/default-styles';
-import { ClassType, AnnotationType, File } from 'interface';
+import { AnnotationType, File } from 'interface';
 import randomNum from 'utils/RandomNum';
+import colorStyle from 'utils/ColorStyle';
 import AnnotationRect from './annotation/AnnotationRect';
 
 interface Props {
@@ -11,7 +12,7 @@ interface Props {
     drawMode: boolean;
     handleEndDrawMode: () => void;
     selectedAnnotation: AnnotationType | null;
-    selectedClass: ClassType;
+    selectedClass: string;
     handleChangeAnnotation: (Anno: AnnotationType) => void;
     selectedImg: File | null;
 }
@@ -34,7 +35,7 @@ const DummyRect = styled.div<{ mark: AnnotationType; color: string }>`
     left: ${(props) => props.mark.mark.x}px;
     width: ${(props) => props.mark.mark.width}px;
     height: ${(props) => props.mark.mark.height}px;
-    border: 2px solid ${(props) => props.color};
+    border: 2px solid ${(props) => colorStyle(props.color)};
 `;
 
 const Screen = styled.div`
@@ -62,7 +63,7 @@ const ImageArea2: React.FC<Props> = (props: Props) => {
     const [tempRect, setTempRect] = useState<AnnotationType>({
         id: '0',
         mark: { x: 0, y: 0, width: 0, height: 0 },
-        class: { title: '', id: '', color: 'black' },
+        class: '',
     });
     const coorRef = useRef({ x: 0, y: 0 });
 
@@ -77,7 +78,7 @@ const ImageArea2: React.FC<Props> = (props: Props) => {
     const handleDraw = (e: MouseEvent<HTMLDivElement>) => {
         if (drawMode && mouseClick) {
             const { offsetX, offsetY } = e.nativeEvent;
-            setTempRect(() => {
+            setTempRect((prev) => {
                 return {
                     id: `${randomNum(annotationList)}`,
                     mark: {
@@ -86,7 +87,7 @@ const ImageArea2: React.FC<Props> = (props: Props) => {
                         width: Math.abs(offsetX - coorRef.current.x),
                         height: Math.abs(offsetY - coorRef.current.y),
                     },
-                    class: { title: '', id: '', color: 'black' },
+                    class: prev.class,
                 };
             });
         }
@@ -100,7 +101,7 @@ const ImageArea2: React.FC<Props> = (props: Props) => {
             setTempRect({
                 id: '0',
                 mark: { x: 0, y: 0, width: 0, height: 0 },
-                class: { title: '', id: '', color: 'black' },
+                class: '',
             });
         }
     };
@@ -125,7 +126,7 @@ const ImageArea2: React.FC<Props> = (props: Props) => {
                         handleChangeAnnotation={handleChangeAnnotation}
                     />
                 ))}
-            {mouseClick && <DummyRect mark={tempRect} color={selectedClass.color} />}
+            {mouseClick && <DummyRect mark={tempRect} color={selectedClass} />}
         </Container>
     );
 };

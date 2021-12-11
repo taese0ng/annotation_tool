@@ -2,7 +2,6 @@ import React, { ChangeEvent } from 'react';
 import { Container, Col } from 'styles/default-styles';
 import styled, { css } from 'styled-components';
 import Color from 'assets/color';
-import { ClassType } from 'interface';
 
 interface Props {
     handleStartDrawMode: () => void;
@@ -14,8 +13,8 @@ interface Props {
         rate: string;
     };
     handleChangeInput: (e: ChangeEvent<HTMLInputElement>) => void;
-    classList: ClassType[];
-    selectedClass: ClassType;
+    classList: string[];
+    selectedClass: string;
     handleSelectClass: (e: ChangeEvent<HTMLSelectElement>) => void;
     handleSaveData: () => void;
 }
@@ -110,10 +109,10 @@ const SettingArea: React.FC<Props> = (props: Props) => {
 
                 <Col>
                     <Label>클래스 선택</Label>
-                    <Select value={selectedClass.id} onChange={handleSelectClass}>
+                    <Select value={selectedClass} onChange={handleSelectClass}>
                         {classList.map((item) => (
-                            <option key={item.id} value={item.id}>
-                                {item.title}
+                            <option key={item} value={item}>
+                                {item}
                             </option>
                         ))}
                     </Select>

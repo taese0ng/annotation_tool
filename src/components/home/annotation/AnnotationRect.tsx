@@ -1,6 +1,7 @@
 import React, { MouseEvent, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { AnnotationType } from 'interface';
+import colorStyle from 'utils/ColorStyle';
 
 interface Props {
     annotation: AnnotationType;
@@ -19,7 +20,7 @@ const Rect = styled.div<{
     position: absolute;
     top: ${(props) => props.y}px;
     left: ${(props) => props.x}px;
-    border: 2px solid ${(props) => props.color};
+    border: 2px solid ${(props) => colorStyle(props.color)};
     width: ${(props) => props.width}px;
     height: ${(props) => props.height}px;
     background-color: ${(props) => (props.isSelected ? '#FFFFFF80' : 'parents')};
@@ -47,7 +48,7 @@ const EdgeDot = styled.span<{ edge: 'lt' | 'rt' | 'lb' | 'rb'; color: string }>`
     }};
     width: ${DotSize}px;
     height: ${DotSize}px;
-    background-color: ${(props) => props.color};
+    background-color: ${(props) => colorStyle(props.color)};
 `;
 
 const CoorPad = styled.div`
@@ -213,15 +214,15 @@ const AnnotationRect: React.FC<Props> = (props: Props) => {
                 <Rect
                     width={tempRect.mark.width}
                     height={tempRect.mark.height}
-                    color={tempRect.class.color || 'black'}
+                    color={tempRect.class || 'black'}
                     x={tempRect.mark.x}
                     y={tempRect.mark.y}
                     isSelected={isSelected}
                 >
-                    <EdgeDot edge="lt" color={tempRect.class.color || 'black'} />
-                    <EdgeDot edge="rt" color={tempRect.class.color || 'black'} />
-                    <EdgeDot edge="lb" color={tempRect.class.color || 'black'} />
-                    <EdgeDot edge="rb" color={tempRect.class.color || 'black'} />
+                    <EdgeDot edge="lt" color={tempRect.class || 'black'} />
+                    <EdgeDot edge="rt" color={tempRect.class || 'black'} />
+                    <EdgeDot edge="lb" color={tempRect.class || 'black'} />
+                    <EdgeDot edge="rb" color={tempRect.class || 'black'} />
                 </Rect>
 
                 <CoorPad
@@ -237,7 +238,7 @@ const AnnotationRect: React.FC<Props> = (props: Props) => {
         <Rect
             width={mark.width}
             height={mark.height}
-            color={Class.color || 'black'}
+            color={Class || 'black'}
             x={mark.x}
             y={mark.y}
             isSelected={isSelected}
