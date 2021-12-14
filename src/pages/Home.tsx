@@ -5,7 +5,7 @@ import randomNumber from 'utils/RandomNum';
 import getImageList from 'api/imageList';
 import { File, AnnotationType } from 'interface';
 import dummyImg from 'assets/img/dummyImg.png';
-import saveAnnotationData from 'api/annotation';
+import { saveAnnotationData, getAutoLabel } from 'api/annotation';
 
 const classList: string[] = [
     '선택하세요',
@@ -244,6 +244,12 @@ const Home: React.FC = () => {
         }
     };
 
+    const handleClickAutoLabelling = async () => {
+        const res = await getAutoLabel(selectedImg.info.url);
+
+        console.log(res);
+    };
+
     useEffect(() => {
         init();
     }, []);
@@ -258,6 +264,7 @@ const Home: React.FC = () => {
                 selectedClass={selectedClass}
                 handleSelectClass={handleSelectClass}
                 handleSaveData={handleSaveData}
+                handleClickAutoLabelling={handleClickAutoLabelling}
             />
 
             <Spacer length={25} />

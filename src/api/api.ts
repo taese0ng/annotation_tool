@@ -11,4 +11,14 @@ const API: AxiosInstance = axios.create({
     },
 });
 
+export const AnnoAPI: AxiosInstance = axios.create({
+    baseURL: 'https://annotation.crowdbank.co.kr/',
+    timeout: 10000,
+    withCredentials: true,
+    headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+    },
+});
+
 export default API;

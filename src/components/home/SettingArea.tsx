@@ -17,6 +17,7 @@ interface Props {
     selectedClass: string;
     handleSelectClass: (e: ChangeEvent<HTMLSelectElement>) => void;
     handleSaveData: () => void;
+    handleClickAutoLabelling: () => void;
 }
 
 const width = css`
@@ -65,13 +66,9 @@ const SettingArea: React.FC<Props> = (props: Props) => {
         selectedClass,
         handleSelectClass,
         handleSaveData,
+        handleClickAutoLabelling,
     } = props;
     const { accidentPlace, placeFeat, objectA, objectB, rate } = inputs;
-
-    const handleClickAutoLabelling = () => {
-        // eslint-disable-next-line no-console
-        console.log('autoLabelling');
-    };
 
     return (
         <Container size={{ width: '200px', height: '100%' }}>
