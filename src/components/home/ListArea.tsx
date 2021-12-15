@@ -65,6 +65,18 @@ const ObjTh = styled.th`
     &:nth-child(1) {
         width: 50px;
     }
+    &:nth-child(2) {
+        width: 90px;
+    }
+    &:nth-child(3) {
+        width: 50px;
+    }
+    &:nth-child(4) {
+        width: 90px;
+    }
+    &:nth-child(6) {
+        width: 50px;
+    }
 `;
 
 const FileTh = styled.th`
@@ -137,9 +149,9 @@ const ListArea: React.FC<Props> = (props: Props) => {
                                     >
                                         <Td>{annotation.id}</Td>
                                         <Td>{annotation.class}</Td>
-                                        <Td>타입영역</Td>
-                                        <Td>Object영역</Td>
-                                        <Td>좌표영역</Td>
+                                        <Td>BOX</Td>
+                                        <Td>{annotation.class}</Td>
+                                        <Td>{`${annotation.mark.x}, ${annotation.mark.y}, ${annotation.mark.width}, ${annotation.mark.height}`}</Td>
                                         <Td>
                                             <DeleteBtn
                                                 onClick={() => handleDeleteAnnotation(annotation)}

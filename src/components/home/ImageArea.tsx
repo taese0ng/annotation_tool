@@ -1,83 +1,132 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, MouseEvent } from 'react';
+import styled from 'styled-components';
 import { Container } from 'styles/default-styles';
-// import styled from 'styled-components';
-import dummyImg from 'assets/img/dummyImg.png';
-import { ReactPictureAnnotation, defaultShapeStyle } from 'react-picture-annotation';
+import { AnnotationType, File } from 'interface';
+import randomNum from 'utils/RandomNum';
+import colorStyle from 'utils/ColorStyle';
+import AnnotationRect from './annotation/AnnotationRect';
 
-// const Img = styled.img`
-//     min-width: 640px;
-//     width: 640px;
-//     min-height: 480px;
-//     height: 480px;
-// `;
-
-interface IAnnotation {
-    id: string; // required,
-    comment: string; // not required
-    mark: {
-        type: 'RECT'; // now only support rect
-
-        // The number of pixels in the upper left corner of the image
-        x: number;
-        y: number;
-
-        // The size of tag
-        width: number;
-        height: number;
-    };
+interface Props {
+    annotationList: AnnotationType[];
+    handleAddAnnotation: (Anno: AnnotationType) => void;
+    drawMode: boolean;
+    handleEndDrawMode: () => void;
+    selectedAnnotation: AnnotationType | null;
+    selectedClass: string;
+    handleChangeAnnotation: (Anno: AnnotationType) => void;
+    selectedImg: File | null;
 }
 
-const ImageArea: React.FC = () => {
-    // const pageSize = { width: window.innerWidth, height: window.innerHeight };
-    const [annotationData, setAnnotationData] = useState<IAnnotation[]>([
-        {
-            id: '11', // required,
-            comment: '',
-            mark: {
-                type: 'RECT', // now only support rect
+const Img = styled.img`
+    min-width: 640px;
+    width: 640px;
+    min-height: 480px;
+    height: 480px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+`;
 
-                // The number of pixels in the upper left corner of the image
-                x: 110,
-                y: 20,
+const DummyRect = styled.div<{ mark: AnnotationType; color: string }>`
+    position: absolute;
+    top: ${(props) => props.mark.mark.y}px;
+    left: ${(props) => props.mark.mark.x}px;
+    width: ${(props) => props.mark.mark.width}px;
+    height: ${(props) => props.mark.mark.height}px;
+    border: 2px solid ${(props) => colorStyle(props.color)};
+`;
 
-                // The size of tag
-                width: 100,
-                height: 10,
-            },
-        },
-    ]);
+const Screen = styled.div`
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+`;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleSelect = (selectedId: any) => {
-        // eslint-disable-next-line no-console
-        console.log('select: ', selectedId);
+const ImageArea: React.FC<Props> = (props: Props) => {
+    const {
+        selectedClass,
+        annotationList,
+        handleAddAnnotation,
+        drawMode,
+        handleEndDrawMode,
+        selectedAnnotation,
+        handleChangeAnnotation,
+        selectedImg,
+    } = props;
+    const [mouseClick, setMouseClick] = useState<boolean>(false);
+    const imgRef = useRef(null);
+    const [tempRect, setTempRect] = useState<AnnotationType>({
+        id: '0',
+        mark: { x: 0, y: 0, width: 0, height: 0 },
+        class: '',
+    });
+    const coorRef = useRef({ x: 0, y: 0 });
+
+    const handleStartDraw = (e: MouseEvent<HTMLDivElement>) => {
+        if (drawMode) {
+            const { offsetX, offsetY } = e.nativeEvent;
+            setMouseClick(true);
+            coorRef.current = { x: offsetX, y: offsetY };
+        }
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleChange = (data: any) => {
-        // eslint-disable-next-line no-console
-        console.log('data: ', data);
-        setAnnotationData(data);
+    const handleDraw = (e: MouseEvent<HTMLDivElement>) => {
+        if (drawMode && mouseClick) {
+            const { offsetX, offsetY } = e.nativeEvent;
+            setTempRect((prev) => {
+                return {
+                    id: `${randomNum(annotationList)}`,
+                    mark: {
+                        x: coorRef.current.x < offsetX ? coorRef.current.x : offsetX,
+                        y: coorRef.current.y < offsetY ? coorRef.current.y : offsetY,
+                        width: Math.abs(offsetX - coorRef.current.x),
+                        height: Math.abs(offsetY - coorRef.current.y),
+                    },
+                    class: prev.class,
+                };
+            });
+        }
+    };
+
+    const handleEndDraw = () => {
+        if (drawMode) {
+            setMouseClick(false);
+            handleEndDrawMode();
+            handleAddAnnotation(tempRect);
+            setTempRect({
+                id: '0',
+                mark: { x: 0, y: 0, width: 0, height: 0 },
+                class: '',
+            });
+        }
     };
 
     return (
-        <Container size={{ width: '640px', height: '480px' }}>
-            {/* <Img src={dummyImg} alt="selectedImg" /> */}
-            <ReactPictureAnnotation
-                image={dummyImg}
-                annotationData={annotationData}
-                onSelect={handleSelect}
-                onChange={handleChange}
-                width={670}
-                height={480}
-                scrollSpeed={0}
-                annotationStyle={{
-                    ...defaultShapeStyle,
-                    shapeShadowStyle: 'blue',
-                    shapeStrokeStyle: 'blue',
-                }}
-                // inputElement={() => <></>}
-            />
+        <Container
+            size={{ width: '640px', height: '480px' }}
+            onMouseDown={handleStartDraw}
+            onMouseMove={handleDraw}
+            onMouseUp={handleEndDraw}
+        >
+            {selectedAnnotation ? <></> : <Screen> </Screen>}
+
+            <Img ref={imgRef} src={selectedImg?.info.url} alt="selectedImg" draggable={false} />
+
+            {annotationList &&
+                annotationList.map((item) => (
+                    <AnnotationRect
+                        key={item.id}
+                        annotation={item}
+                        isSelected={selectedAnnotation?.id === item.id}
+                        handleChangeAnnotation={handleChangeAnnotation}
+                    />
+                ))}
+            {mouseClick && <DummyRect mark={tempRect} color={selectedClass} />}
         </Container>
     );
 };

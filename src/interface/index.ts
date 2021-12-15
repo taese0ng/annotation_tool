@@ -45,3 +45,8 @@ export interface SaveDataType {
     dno: string;
     data: DataType;
 }
+
+export interface AutoData {
+    class_name: string;
+    coordinate: number[];
+}

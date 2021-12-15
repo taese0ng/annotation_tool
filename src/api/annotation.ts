@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import API, { AnnoAPI } from './api';
 
 export const saveAnnotationData = async (data: FormData): Promise<any> => {

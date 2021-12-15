@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-alert */
 import React, { useState, ChangeEvent, useEffect } from 'react';
-import { ImageArea2, SettingArea, ListArea } from 'components/home';
+import { ImageArea, SettingArea, ListArea } from 'components/home';
 import { Container, Spacer } from 'styles/default-styles';
 import randomNumber from 'utils/RandomNum';
 import getImageList from 'api/imageList';
-import { File, AnnotationType } from 'interface';
+import { File, AnnotationType, AutoData } from 'interface';
 import dummyImg from 'assets/img/dummyImg.png';
 import { saveAnnotationData, getAutoLabel } from 'api/annotation';
 
@@ -247,7 +249,31 @@ const Home: React.FC = () => {
     const handleClickAutoLabelling = async () => {
         const res = await getAutoLabel(selectedImg.info.url);
 
-        console.log(res);
+        if (res.status >= 400) {
+            window.alert('통신에 실패했습니다.');
+        }
+
+        const { data } = res;
+        const tempArr: AnnotationType[] = [];
+        data.forEach((item: AutoData) => {
+            tempArr.push({
+                id: randomNumber(tempArr),
+                mark: {
+                    x: item.coordinate[0],
+                    y: item.coordinate[1],
+                    width: item.coordinate[2],
+                    height: item.coordinate[3],
+                },
+                class: item.class_name,
+            });
+        });
+
+        setSelectedImg((prev) => {
+            return {
+                info: prev.info,
+                annoList: tempArr,
+            };
+        });
     };
 
     useEffect(() => {
@@ -269,7 +295,7 @@ const Home: React.FC = () => {
 
             <Spacer length={25} />
 
-            <ImageArea2
+            <ImageArea
                 selectedClass={selectedClass}
                 drawMode={drawMode}
                 handleEndDrawMode={handleEndDrawMode}
