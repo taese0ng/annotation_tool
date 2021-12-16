@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './App.css';
-import { Signin, Home } from 'pages';
+import { Home } from 'pages';
 
 const App: React.FC = () => {
-    const [isLogin, setIsLogin] = useState<boolean>(false);
-
-    useEffect(() => {
-        setIsLogin(true);
-    }, []);
-
-    return <div className="App">{isLogin ? <Home /> : <Signin />}</div>;
+    return (
+        <div className="App">
+            <Home />
+        </div>
+    );
 };
 
 export default App;

@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-alert */
 import React, { useState, ChangeEvent, useEffect } from 'react';
@@ -8,6 +10,7 @@ import getImageList from 'api/imageList';
 import { File, AnnotationType, AutoData } from 'interface';
 import dummyImg from 'assets/img/dummyImg.png';
 import { saveAnnotationData, getAutoLabel } from 'api/annotation';
+import queryString from 'query-string';
 
 const classList: string[] = [
     '선택하세요',
@@ -23,6 +26,8 @@ const classList: string[] = [
 ];
 
 const Home: React.FC = () => {
+    const queryObj = queryString.parse(window.location.search);
+    const { mode: m, pno: p, spno: s, apikey: a } = queryObj;
     const [drawMode, setDrawMode] = useState<boolean>(false);
     const [selectedAnnotation, setSelectedAnnotation] = useState<AnnotationType | null>(null);
     const [inputs, setInputs] = useState({
@@ -53,67 +58,82 @@ const Home: React.FC = () => {
         },
     ]);
     const [selectedImg, setSelectedImg] = useState<File>(fileList[0]);
+    const [hasKey, setHasKey] = useState<boolean>(false);
 
     const init = async () => {
-        const res = await getImageList();
+        const Obj = {
+            mode: String(m),
+            pno: String(p),
+            spno: String(s),
+            apiKey: String(a),
+        };
+        const res = await getImageList(Obj);
 
-        const { datas } = res.data;
+        if (res.data.result !== 1) {
+            setHasKey(false);
+            alert('apiKey가 다릅니다.');
+        } else {
+            setHasKey(true);
+            const { datas } = res.data;
 
-        const productData = datas.map((data: any) => {
-            const annoData = JSON.parse(data.data);
-            let annoList: any[] = [];
-            const info = {
-                dno: data.dno,
-                pno: data.pno,
-                spno: data.spno,
-                url: data.url,
-                domain: data.domain,
-                filename: data.filename,
-                path: data.path,
-                accidentPlace: '',
-                placeFeat: '',
-                objectA: '',
-                objectB: '',
-                rate: '',
-            };
+            const productData = datas.map((data: any) => {
+                const annoData = JSON.parse(data.data);
+                let annoList: any[] = [];
+                const info = {
+                    dno: data.dno,
+                    pno: data.pno,
+                    spno: data.spno,
+                    url: data.url,
+                    domain: data.domain,
+                    filename: data.filename,
+                    path: data.path,
+                    accidentPlace: '',
+                    placeFeat: '',
+                    objectA: '',
+                    objectB: '',
+                    rate: '',
+                };
 
-            if (annoData !== null) {
-                annoList = annoData.Bounding_Box.map((anno: any) => {
-                    return {
-                        id: anno.id,
-                        mark: {
-                            x: anno.coordinate[0],
-                            y: anno.coordinate[1],
-                            width: anno.coordinate[2],
-                            height: anno.coordinate[3],
-                        },
-                        class: anno.class_name,
-                    };
+                if (annoData !== null) {
+                    annoList = annoData.Bounding_Box.map((anno: any) => {
+                        return {
+                            id: anno.id,
+                            mark: {
+                                x: anno.coordinate[0],
+                                y: anno.coordinate[1],
+                                width: anno.coordinate[2],
+                                height: anno.coordinate[3],
+                            },
+                            class: anno.class_name,
+                        };
+                    });
+
+                    info.accidentPlace = annoData.accident_place;
+                    info.placeFeat = annoData.place_feature;
+                    info.objectA = annoData.object_A;
+                    info.objectB = annoData.object_B;
+                    info.rate = annoData.rate;
+                }
+
+                return {
+                    info,
+                    annoList,
+                };
+            });
+
+            setFileList(productData);
+
+            if (productData.length > 0) {
+                setInputs({
+                    accidentPlace: productData[0].info.accidentPlace,
+                    placeFeat: productData[0].info.placeFeat,
+                    objectA: productData[0].info.objectA,
+                    objectB: productData[0].info.objectB,
+                    rate: productData[0].info.rate,
                 });
-
-                info.accidentPlace = annoData.accident_place;
-                info.placeFeat = annoData.place_feature;
-                info.objectA = annoData.object_A;
-                info.objectB = annoData.object_B;
-                info.rate = annoData.rate;
+                setSelectedImg(productData[0]);
             }
-
-            return {
-                info,
-                annoList,
-            };
-        });
-
-        setFileList(productData);
-
-        setInputs({
-            accidentPlace: productData[0].info.accidentPlace,
-            placeFeat: productData[0].info.placeFeat,
-            objectA: productData[0].info.objectA,
-            objectB: productData[0].info.objectB,
-            rate: productData[0].info.rate,
-        });
-        setSelectedImg(productData[0]);
+        }
     };
 
     const handleSelectClass = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -236,9 +256,9 @@ const Home: React.FC = () => {
             };
 
             formData.append('mode', 'annotation');
-            formData.append('apikey', '7670f88f-814c-4a16-bd13-5eb2cdf86f01');
-            formData.append('pno', '46');
-            formData.append('spno', '41');
+            formData.append('apikey', String(a));
+            formData.append('pno', String(p));
+            formData.append('spno', String(s));
             formData.append('dno', selectedImg.info.dno);
             formData.append('data', JSON.stringify(data));
 
@@ -279,6 +299,10 @@ const Home: React.FC = () => {
     useEffect(() => {
         init();
     }, []);
+
+    if (!hasKey) {
+        return <></>;
+    }
 
     return (
         <Container fullSpace flexDirection="row" scroll>
