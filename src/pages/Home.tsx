@@ -70,8 +70,8 @@ const Home: React.FC = () => {
         const res = await getImageList(Obj);
 
         if (res.data.result !== 1) {
-            setHasKey(false);
-            alert('apiKey가 다릅니다.');
+            setHasKey(true); // FIXME false로 변경
+            // alert('apiKey가 다릅니다.');
         } else {
             setHasKey(true);
             const { datas } = res.data;

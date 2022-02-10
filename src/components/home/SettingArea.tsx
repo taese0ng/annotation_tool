@@ -1,7 +1,8 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Container, Col } from 'styles/default-styles';
 import styled, { css } from 'styled-components';
 import Color from 'assets/color';
+import accidentObjects from 'data/accidentType';
 
 interface Props {
     handleStartDrawMode: () => void;
@@ -69,12 +70,159 @@ const SettingArea: React.FC<Props> = (props: Props) => {
         handleClickAutoLabelling,
     } = props;
     const { accidentPlace, placeFeat, objectA, objectB, rate } = inputs;
+    const [inputs2, setInputs] = useState({
+        accidentObj: accidentObjects[0].title,
+        accidentPlace: accidentObjects[0].place[0].title,
+        placeFeat: accidentObjects[0].place[0].feat[0].title,
+        objectA: accidentObjects[0].place[0].feat[0].Adirection[0].title,
+        objectB: accidentObjects[0].place[0].feat[0].Adirection[0].Bdirection[0].title,
+        rate: accidentObjects[0].place[0].feat[0].Adirection[0].Bdirection[0].rate,
+    });
+
+    const accidentPlaces = accidentObjects.find((obj) => obj.title === inputs2.accidentObj)?.place;
+    const placeFeats = accidentPlaces?.find((place) => place.title === inputs2.accidentPlace)?.feat;
+    const objectAs = placeFeats?.find((feat) => feat.title === inputs2.placeFeat)?.Adirection;
+    const objectBs = objectAs?.find((objA) => objA.title === inputs2.objectA)?.Bdirection;
+
+    const handleSelectItem = (e: ChangeEvent<HTMLSelectElement>) => {
+        const { value, name } = e.target;
+
+        switch (name) {
+            case 'accidentObj': {
+                const test = accidentObjects.find((obj) => obj.title === value);
+
+                setInputs({
+                    accidentObj: value,
+                    accidentPlace: test?.place[0]?.title || '',
+                    placeFeat: test?.place[0].feat[0].title || '',
+                    objectA: test?.place[0].feat[0].Adirection[0].title || '',
+                    objectB: test?.place[0].feat[0].Adirection[0].Bdirection[0].title || '',
+                    rate: test?.place[0].feat[0].Adirection[0].Bdirection[0].rate || 0,
+                });
+                break;
+            }
+
+            case 'accidentPlace': {
+                const test = accidentPlaces?.find((place) => place.title === value);
+
+                setInputs({
+                    ...inputs2,
+                    accidentPlace: value,
+                    placeFeat: test?.feat[0].title || '',
+                    objectA: test?.feat[0].Adirection[0].title || '',
+                    objectB: test?.feat[0].Adirection[0].Bdirection[0].title || '',
+                    rate: test?.feat[0].Adirection[0].Bdirection[0].rate || 0,
+                });
+                break;
+            }
+
+            case 'placeFeat': {
+                const test = placeFeats?.find((feat) => feat.title === value);
+
+                setInputs({
+                    ...inputs2,
+                    placeFeat: value,
+                    objectA: test?.Adirection[0].title || '',
+                    objectB: test?.Adirection[0].Bdirection[0].title || '',
+                    rate: test?.Adirection[0].Bdirection[0].rate || 0,
+                });
+                break;
+            }
+
+            case 'objectA': {
+                const test = objectAs?.find((objA) => objA.title === value);
+
+                setInputs({
+                    ...inputs2,
+                    objectA: value,
+                    objectB: test?.Bdirection[0].title || '',
+                    rate: test?.Bdirection[0].rate || 0,
+                });
+                break;
+            }
+            default:
+                break;
+        }
+    };
 
     return (
         <Container size={{ width: '200px', height: '100%' }}>
             <Button onClick={handleSaveData}>저장</Button>
 
             <Wrapper>
+                <Col>
+                    <Label>사고객체</Label>
+                    <Select
+                        value={inputs2.accidentObj}
+                        name="accidentObj"
+                        onChange={handleSelectItem}
+                    >
+                        {accidentObjects.map((item) => (
+                            <option key={item.title} value={item.title}>
+                                {item.title}
+                            </option>
+                        ))}
+                    </Select>
+                </Col>
+
+                <Col>
+                    <Label>사고장소</Label>
+                    <Select
+                        value={inputs2.accidentPlace}
+                        name="accidentPlace"
+                        onChange={handleSelectItem}
+                    >
+                        {accidentPlaces?.map((item) => (
+                            <option key={item.title} value={item.title}>
+                                {item.title}
+                            </option>
+                        ))}
+                    </Select>
+                </Col>
+
+                <Col>
+                    <Label>사고장소특징</Label>
+                    <Select value={inputs2.placeFeat} name="placeFeat" onChange={handleSelectItem}>
+                        {placeFeats?.map((item) => (
+                            <option key={item.title} value={item.title}>
+                                {item.title}
+                            </option>
+                        ))}
+                    </Select>
+                </Col>
+
+                <Col>
+                    <Label>A진행방향</Label>
+                    <Select value={inputs2.objectA} name="objectA" onChange={handleSelectItem}>
+                        {objectAs?.map((item) => (
+                            <option key={item.title} value={item.title}>
+                                {item.title}
+                            </option>
+                        ))}
+                    </Select>
+                </Col>
+
+                <Col>
+                    <Label>B진행방향</Label>
+                    <Select value={inputs2.objectB} name="objectB" onChange={handleSelectItem}>
+                        {objectBs?.map((item) => (
+                            <option key={item.title} value={item.title}>
+                                {item.title}
+                            </option>
+                        ))}
+                    </Select>
+                </Col>
+
+                {/*  */}
+                {/*  */}
+                {/*  */}
+                {/*  */}
+                {/*  */}
+                {/*  */}
+                {/*  */}
+                {/*  */}
+                {/*  */}
+
                 <Col>
                     <Label>사고 장소 유형</Label>
                     <Input
