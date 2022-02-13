@@ -1,4 +1,5 @@
 import carByCar from './carByCar';
 import carByPedestrian from './carByPedestrian';
+import expressway from './expressway';
 
-export { carByCar, carByPedestrian };
+export { carByCar, carByPedestrian, expressway };
