@@ -1,10 +1,11 @@
-import { carByCar, carByPedestrian, expressway, carByCart } from './accidentObjects';
+import { carByCar, carByPedestrian, expressway, carByCart, carByBicycle } from './accidentObjects';
 
 const accidentObjects: Array<AccidentObjectType> = [
     carByCar,
     carByPedestrian,
     expressway,
     carByCart,
+    carByBicycle,
 ];
 
 export interface AccidentObjectType {
