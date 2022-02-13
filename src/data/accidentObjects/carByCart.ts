@@ -112,6 +112,11 @@ const carByCart: AccidentObjectType = {
                                 { title: '오른쪽 문 열림', rate: 70 },
                             ],
                         },
+                    ],
+                },
+                {
+                    title: '정차 후 출발사고',
+                    Adirection: [
                         {
                             title: '정차 후 출발',
                             Bdirection: [{ title: '추월', rate: 30 }],
@@ -208,7 +213,10 @@ const carByCart: AccidentObjectType = {
                     Adirection: [
                         {
                             title: '대로에서 직진(동시진입)',
-                            Bdirection: [{ title: '소로에서 우회전(동시진입)', rate: 80 }],
+                            Bdirection: [
+                                { title: '소로에서 우회전(동시진입)', rate: 80 },
+                                { title: '소로에서 직진(동시진입)', rate: 80 },
+                            ],
                         },
                         {
                             title: '대로에서 직진(선진입)',
@@ -291,10 +299,6 @@ const carByCart: AccidentObjectType = {
                             title: '대로에서 우회전(후진입)',
                             Bdirection: [{ title: '소로에서 직진(선진입)', rate: 70 }],
                         },
-                        {
-                            title: '대로에서 직진(동시진입)',
-                            Bdirection: [{ title: '소로에서 직진(동시진입)', rate: 80 }],
-                        },
                     ],
                 },
                 {
@@ -338,6 +342,11 @@ const carByCart: AccidentObjectType = {
                             title: '표지가 없는 도로에서 우회전',
                             Bdirection: [{ title: '일시정지 위반 직진', rate: 90 }],
                         },
+                    ],
+                },
+                {
+                    title: '일방통행 표지가 한쪽방향에만 있음',
+                    Adirection: [
                         {
                             title: '표지가 없는 도로에서 직진',
                             Bdirection: [{ title: '일방통행 위반 직진', rate: 90 }],
