@@ -1,6 +1,11 @@
-import { carByCar, carByPedestrian, expressway } from './accidentObjects';
+import { carByCar, carByPedestrian, expressway, carByCart } from './accidentObjects';
 
-const accidentObjects: Array<AccidentObjectType> = [carByCar, carByPedestrian, expressway];
+const accidentObjects: Array<AccidentObjectType> = [
+    carByCar,
+    carByPedestrian,
+    expressway,
+    carByCart,
+];
 
 export interface AccidentObjectType {
     title: string;
