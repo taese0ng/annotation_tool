@@ -18,6 +18,7 @@ export interface File {
         domain: string;
         filename: string;
         path: string;
+        accidentObj: string;
         accidentPlace: string;
         placeFeat: string;
         objectA: string;
@@ -29,6 +30,7 @@ export interface File {
 
 interface DataType {
     url: string;
+    accident_object: string;
     accident_place: string;
     place_feature: string;
     object_A: string;

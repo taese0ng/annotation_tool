@@ -28,7 +28,7 @@ const classList: string[] = [
 
 const Home: React.FC = () => {
     const queryObj = queryString.parse(window.location.search);
-    const { mode: m, pno: p, spno: s, apikey: a } = queryObj;
+    const { mode: m, pno: p, spno: s, apikey: a, limit: l } = queryObj;
     const [drawMode, setDrawMode] = useState<boolean>(false);
     const [selectedAnnotation, setSelectedAnnotation] = useState<AnnotationType | null>(null);
     const [selectedClass, setSelectedClass] = useState<string>('선택하세요');
@@ -42,6 +42,7 @@ const Home: React.FC = () => {
                 domain: '',
                 filename: 'dummyImg',
                 path: '',
+                accidentObj: '',
                 accidentPlace: '',
                 placeFeat: '',
                 objectA: '',
@@ -54,17 +55,13 @@ const Home: React.FC = () => {
     const [selectedImg, setSelectedImg] = useState<File>(fileList[0]);
     const [hasKey, setHasKey] = useState<boolean>(false);
 
-    const firstRate = `${
-        100 - accidentObjects[0].place[0].feat[0].Adirection[0].Bdirection[0].rate
-    }:${accidentObjects[0].place[0].feat[0].Adirection[0].Bdirection[0].rate}`;
-
     const [inputs, setInputs] = useState({
         accidentObj: accidentObjects[0].title,
-        accidentPlace: accidentObjects[0].place[0].title,
-        placeFeat: accidentObjects[0].place[0].feat[0].title,
-        objectA: accidentObjects[0].place[0].feat[0].Adirection[0].title,
-        objectB: accidentObjects[0].place[0].feat[0].Adirection[0].Bdirection[0].title,
-        rate: firstRate,
+        accidentPlace: accidentObjects[0].place[0].title || '',
+        placeFeat: accidentObjects[0].place[0].feat[0].title || '',
+        objectA: accidentObjects[0].place[0].feat[0].Adirection[0].title || '',
+        objectB: accidentObjects[0].place[0].feat[0].Adirection[0].Bdirection[0].title || '',
+        rate: '',
     });
 
     const makeRateString = (BRate = 0) => {
@@ -148,6 +145,7 @@ const Home: React.FC = () => {
             pno: String(p),
             spno: String(s),
             apiKey: String(a),
+            limit: String(l),
         };
         const res = await getImageList(Obj);
 
@@ -161,6 +159,7 @@ const Home: React.FC = () => {
             const productData = datas.map((data: any) => {
                 const annoData = JSON.parse(data.data);
                 let annoList: any[] = [];
+
                 const info = {
                     dno: data.dno,
                     pno: data.pno,
@@ -169,10 +168,12 @@ const Home: React.FC = () => {
                     domain: data.domain,
                     filename: data.filename,
                     path: data.path,
-                    accidentPlace: '',
-                    placeFeat: '',
-                    objectA: '',
-                    objectB: '',
+                    accidentObj: accidentObjects[0].title,
+                    accidentPlace: accidentObjects[0].place[0].title || '',
+                    placeFeat: accidentObjects[0].place[0].feat[0].title || '',
+                    objectA: accidentObjects[0].place[0].feat[0].Adirection[0].title || '',
+                    objectB:
+                        accidentObjects[0].place[0].feat[0].Adirection[0].Bdirection[0].title || '',
                     rate: '',
                 };
 
@@ -190,6 +191,7 @@ const Home: React.FC = () => {
                         };
                     });
 
+                    info.accidentObj = annoData.accident_object;
                     info.accidentPlace = annoData.accident_place;
                     info.placeFeat = annoData.place_feature;
                     info.objectA = annoData.object_A;
@@ -208,6 +210,7 @@ const Home: React.FC = () => {
             if (productData.length > 0) {
                 setInputs({
                     ...inputs,
+                    accidentObj: productData[0].info.accidentObj,
                     accidentPlace: productData[0].info.accidentPlace,
                     placeFeat: productData[0].info.placeFeat,
                     objectA: productData[0].info.objectA,
@@ -295,6 +298,7 @@ const Home: React.FC = () => {
 
         setInputs({
             ...inputs,
+            accidentObj: selectedItem.info.accidentObj,
             accidentPlace: selectedItem.info.accidentPlace,
             placeFeat: selectedItem.info.placeFeat,
             objectA: selectedItem.info.objectA,
@@ -320,6 +324,7 @@ const Home: React.FC = () => {
 
             const data = {
                 url: selectedImg.info.url,
+                accident_object: inputs.accidentObj,
                 accident_place: inputs.accidentPlace,
                 place_feature: inputs.placeFeat,
                 object_A: inputs.objectA,

@@ -6,12 +6,13 @@ const getImageList = async (queryString: {
     pno: string;
     spno: string;
     apiKey: string;
+    limit: string;
 }): Promise<any> => {
     try {
-        const { mode, pno, spno, apiKey } = queryString;
+        const { mode, pno, spno, apiKey, limit } = queryString;
 
         const res = await API.get(
-            `?mode=${mode}&pno=${pno}&spno=${spno}&apikey=${apiKey}&limit=10`,
+            `?mode=${mode}&pno=${pno}&spno=${spno}&apikey=${apiKey}&limit=${limit}`,
         );
 
         return res;
