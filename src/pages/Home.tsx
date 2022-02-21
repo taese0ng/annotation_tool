@@ -341,6 +341,8 @@ const Home: React.FC = () => {
             formData.append('data', JSON.stringify(data));
 
             await saveAnnotationData(formData);
+
+            window.location.reload();
         }
     };
 
